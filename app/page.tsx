@@ -1,112 +1,161 @@
+"use client";
+
 import Image from "next/image";
+import bgStars from "@/public/assets/bg-stars.svg";
+import patternHills from "@/public/assets/pattern-hills.svg";
+import { Separator } from "@/components/ui/separator";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+  const initialTime = 60 * 60 * 24 * 8;
+  const [timeRemaining, setTimeRemaining] = useState(initialTime);
+  const [animationEnabled, setAnimationEnabled] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setAnimationEnabled(true), 1000);
+
+    const timerInterval = setInterval(() => {
+      setTimeRemaining((prevTime) => {
+        if (prevTime === 0) {
+          clearInterval(timerInterval);
+          console.log("Countdown complete!");
+          return 0;
+        } else {
+          return prevTime - 1;
+        }
+      });
+    }, 1000);
+
+    return () => {
+      clearTimeout(timer);
+      clearInterval(timerInterval);
+    };
+  }, []);
+
+  const days = Math.floor(timeRemaining / (3600 * 24));
+  const hours = Math.floor((timeRemaining % (3600 * 24)) / 3600);
+  const minutes = Math.floor((timeRemaining % 3600) / 60);
+  const seconds = timeRemaining % 60;
+
+  const timeUnits = [
+    { label: "Days", value: days },
+    { label: "Hours", value: hours },
+    { label: "Minutes", value: minutes },
+    { label: "Seconds", value: seconds },
+  ];
+
+  const formatTime = (value: number, unit?: string) => {
+    if (unit == "Seconds" || unit == "Minutes") {
+      if (value == 60) {
+        return "00";
+      }
+    }
+    if (unit == "Hours") {
+      if (value == 24) {
+        return "00";
+      }
+    }
+    return value < 10 ? `0${value}` : value;
+  };
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <main className="min-h-screen bg-foreground flex relative">
+      <div className="absolute w-full h-full bg-gradient-to-t from-primary/10 to-transparent"></div>
+      <Image
+        src={bgStars}
+        alt="Stars"
+        className="w-full h-full absolute object-cover"
+      />
+      <Image
+        src={patternHills}
+        alt="Hills"
+        className="w-full h-[30vh] bottom-0 absolute object-cover object-right"
+      />
+      <div className="flex flex-col w-full justify-center items-center z-10 p-6">
+        <div className="ps-2 font-bold uppercase text-white tracking-[0.3em] lg:tracking-[0.5em] text-lg sm:text-xl mb-12 sm:mb-20 lg:mb-24 text-center max-w-xs sm:max-w-full">
+          We're Launching Soon
         </div>
-      </div>
-
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
+        <div className="grid grid-cols-4 gap-4 sm:gap-7 lg:gap-10 mb-44 lg:mb-52">
+          {timeUnits.map((unit) => (
+            <div
+              key={unit.label}
+              className="uppercase text-secondary font-bold tracking-[0.4em] text-[.45rem] sm:text-xs lg:text-sm text-center"
+            >
+              <div className="aspect-square bg-secondary-foreground w-[70px] sm:w-28 lg:w-36 rounded-md lg:rounded-lg overflow-hidden shadow-[0_5px_0_0_hsl(var(--foreground))] sm:shadow-[0_8px_0_0_hsl(var(--foreground))] lg:shadow-[0_10px_0_0_hsl(var(--foreground))] text-primary tracking-normal font-bold text-4xl sm:text-6xl lg:text-7xl flex items-center justify-center relative">
+                <div className="bg-secondary-foreground h-1/2 w-full absolute top-0 overflow-hidden">
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 -translate-y-1/2">
+                    {formatTime(unit.value)}
+                  </div>
+                  <div className="bg-background/40 h-full w-full absolute top-0"></div>
+                </div>
+                <div
+                  className="absolute w-full h-1/2 z-20 top-0 overflow-hidden bg-secondary-foreground flip-top"
+                  key={unit.value}
+                >
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 -translate-y-1/2">
+                    {animationEnabled
+                      ? formatTime(unit.value + 1, unit.label)
+                      : "XX"}
+                  </div>
+                  <div className="bg-background/40 h-full w-full absolute top-0"></div>
+                </div>
+                <Separator className="absolute bg-foreground z-50"></Separator>
+                <div className="absolute h-2 w-2 lg:h-3 lg:w-3 bg-foreground rounded-full -left-1 lg:-left-1.5 z-50"></div>
+                <div className="absolute h-2 w-2 lg:h-3 lg:w-3 bg-foreground rounded-full -right-1 lg:-right-1.5 z-50"></div>
+                <div
+                  className="absolute w-full h-1/2 z-20 bottom-0 overflow-hidden bg-secondary-foreground flip-bottom"
+                  key={unit.value + 1}
+                >
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 translate-y-1/2">
+                    {formatTime(unit.value)}
+                  </div>
+                </div>
+                {animationEnabled
+                  ? formatTime(unit.value + 1, unit.label)
+                  : "XX"}
+              </div>
+              <div className="mt-3 sm:mt-4 lg:mt-6">{unit.label}</div>
+            </div>
+          ))}
+        </div>
+        <div className="grid grid-cols-3 gap-8 absolute bottom-12 sm:bottom-16">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            className="group"
+          >
+            <path
+              className="group-hover:fill-primary"
+              fill="#8385A9"
+              d="M22.675 0H1.325C.593 0 0 .593 0 1.325v21.351C0 23.407.593 24 1.325 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.73 0 1.323-.593 1.323-1.325V1.325C24 .593 23.407 0 22.675 0z"
+            />
+          </svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            className="group"
+          >
+            <path
+              className="group-hover:fill-primary"
+              fill="#8385A9"
+              d="M12 0C5.373 0 0 5.372 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 01.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.631-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12 0-6.628-5.373-12-12-12z"
+            />
+          </svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            className="group"
+          >
+            <path
+              className="group-hover:fill-primary"
+              fill="#8385A9"
+              d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"
+            />
+          </svg>
+        </div>
       </div>
     </main>
   );
