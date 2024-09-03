@@ -66,3 +66,48 @@
     @apply bg-background text-foreground;
   }
 }
+
+.flip-top {
+  transform: rotateX(-90deg);
+  transform-origin: 0% 100%;
+  animation: flipTop 0.3s linear;
+}
+.flip-bottom {
+  transform: rotateX(0deg);
+  transform-origin: 0% 0%;
+  animation: flipBottom 0.6s linear;
+}
+
+@keyframes flipTop {
+  0% {
+    transform: rotateX(0deg);
+  }
+  0%,
+  99% {
+    opacity: 1;
+  }
+  100% {
+    transform: rotateX(-90deg);
+    opacity: 0;
+  }
+}
+
+@keyframes flipBottom {
+  0%,
+  50% {
+    transform: rotateX(90deg);
+    opacity: 0;
+  }
+  51% {
+    opacity: 0.99;
+  }
+  100% {
+    opacity: 0.99;
+    transform: rotateX(0deg);
+    z-index: 5;
+  }
+}
+
+.icon:hover path {
+  fill: hsl(var(--primary));
+}
